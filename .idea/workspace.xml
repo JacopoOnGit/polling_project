@@ -4,9 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c9496a4d-b34a-4f5b-a161-63b17643ec61" name="Changes" comment="progetto terminato">
-      <change afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
+    <list default="true" id="c9496a4d-b34a-4f5b-a161-63b17643ec61" name="Changes" comment="requirements aggiunti">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/polling_api/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/polling_api/settings.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -81,7 +81,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1752077518495</updated>
-      <workItem from="1752077519513" duration="26456000" />
+      <workItem from="1752077519513" duration="28462000" />
     </task>
     <task id="LOCAL-00001" summary="frontend quasi terminato">
       <option name="closed" value="true" />
@@ -123,7 +123,15 @@
       <option name="project" value="LOCAL" />
       <updated>1752170084253</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="requirements aggiunti">
+      <option name="closed" value="true" />
+      <created>1752172383082</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1752172383082</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -133,7 +141,8 @@
     <MESSAGE value="frontend quasi terminato" />
     <MESSAGE value="risolti problemi con chiamate non eseguite" />
     <MESSAGE value="progetto terminato" />
-    <option name="LAST_COMMIT_MESSAGE" value="progetto terminato" />
+    <MESSAGE value="requirements aggiunti" />
+    <option name="LAST_COMMIT_MESSAGE" value="requirements aggiunti" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/polling_project$views.coverage" NAME="views Coverage Results" MODIFIED="1752165681778" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/polls" />

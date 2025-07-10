@@ -97,7 +97,7 @@
     return res.json();
   })
   .then(() => {
-    // login automatico dopo la registrazione
+
     return fetch(`${API}/token/`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },

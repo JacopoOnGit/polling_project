@@ -6,6 +6,7 @@
   <style>
     body { font-family: Arial, sans-serif; background: #f8f9fa; padding: 20px; }
     .container { max-width: 600px; margin: auto; background: #fff; padding: 20px; border-radius: 8px; }
+    .hidden { display: none; }
     input, textarea, button { display: block; width: 100%; margin-bottom: 10px; padding: 10px; font-size: 16px; }
     .logout { background: #dc3545; color: white; }
     .logout:hover { background: #a71d2a; }
@@ -67,8 +68,7 @@
         if (data.access) {
           localStorage.setItem("access", data.access);
           localStorage.setItem("refresh", data.refresh);
-          document.getElementById("auth").style.display = "none";
-          document.getElementById("main").style.display = "block";
+          showMain();
           loadPolls();
         } else {
           alert("Login failed");
@@ -84,13 +84,19 @@
           username: document.getElementById("regUser").value,
           password: document.getElementById("regPass").value
         }),
-      }).then(() => alert("User registered"));
+      })
+      .then(res => {
+        if (!res.ok) throw new Error("Registration failed");
+        return res.json();
+      })
+      .then(() => alert("User registered"))
+      .catch(err => alert(err.message));
     }
 
     function logout() {
       localStorage.clear();
-      document.getElementById("auth").style.display = "block";
-      document.getElementById("main").style.display = "none";
+      document.getElementById("auth").classList.remove("hidden");
+      document.getElementById("main").classList.add("hidden");
     }
 
     function createPoll() {
@@ -148,6 +154,7 @@
       const input = document.getElementById(`choiceInput-${pollId}`);
       const text = input.value;
       if (!text.trim()) return alert("Choice cannot be empty");
+
       fetch(`${API}/choices/`, {
         method: "POST",
         headers: setHeaders(),
@@ -186,13 +193,16 @@
       }).then(() => loadPolls());
     }
 
-    // Se token esiste, carica la pagina principale
+    function showMain() {
+      document.getElementById("auth").classList.add("hidden");
+      document.getElementById("main").classList.remove("hidden");
+    }
+
+    // Inizializzazione
     if (localStorage.getItem("access")) {
-      document.getElementById("auth").style.display = "none";
-      document.getElementById("main").style.display = "block";
+      showMain();
       loadPolls();
     }
   </script>
 </body>
 </html>
-

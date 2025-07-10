@@ -18,13 +18,19 @@ class PollViewSet(viewsets.ModelViewSet):
         instance.delete()
 
     def get_serializer_context(self):
-            return {'request': self.request}
-
+        context = super().get_serializer_context()
+        context.update({'request': self.request})
+        return context
 
 class ChoiceViewSet(viewsets.ModelViewSet):
     queryset = Choice.objects.all()
     serializer_class = ChoiceSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context.update({'request': self.request})
+        return context
 
 class VoteViewSet(viewsets.ModelViewSet):
     queryset = Vote.objects.all()
@@ -34,10 +40,11 @@ class VoteViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         poll = serializer.validated_data['poll']
         user = self.request.user
-        # Verifica se l'utente ha già votato
         if Vote.objects.filter(poll=poll, user=user).exists():
             raise PermissionDenied("Hai già votato per questo sondaggio.")
         serializer.save(user=user)
 
     def get_serializer_context(self):
-        return {'request': self.request}
+        context = super().get_serializer_context()
+        context.update({'request': self.request})
+        return context

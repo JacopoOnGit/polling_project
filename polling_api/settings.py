@@ -83,8 +83,12 @@ WSGI_APPLICATION = 'polling_api.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'railway',
+        'USER': 'postgres',
+        'PASSWORD': 'zdKnzhfsdxjkvsNgnVACWVZqSuyVyPET',
+        'HOST': 'postgres-production-0773.up.railway.app',
+        'PORT': '5432',
     }
 }
 

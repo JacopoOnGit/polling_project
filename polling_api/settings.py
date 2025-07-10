@@ -144,8 +144,8 @@ SIMPLE_JWT = {
 }
 
 CORS_ALLOWED_ORIGINS = [
-    'https://localhost:5173/',
-    'https://jacopoongit.github.io/polling_project/',
+    'https://localhost:5173',
+    'https://jacopoongit.github.io/polling_project',
 ]
 
 REST_FRAMEWORK = {

@@ -32,6 +32,13 @@ class ChoiceViewSet(viewsets.ModelViewSet):
         context.update({'request': self.request})
         return context
 
+    def perform_create(self, serializer):
+        poll = serializer.validated_data['poll']
+        user = self.request.user
+        if poll.author != user:
+            raise PermissionDenied("⛔ Non puoi aggiungere scelte a sondaggi non tuoi.")
+        serializer.save()
+
 class VoteViewSet(viewsets.ModelViewSet):
     queryset = Vote.objects.all()
     serializer_class = VoteSerializer
@@ -40,9 +47,14 @@ class VoteViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         poll = serializer.validated_data['poll']
         user = self.request.user
-        if Vote.objects.filter(poll=poll, user=user).exists():
-            raise PermissionDenied("Hai già votato per questo sondaggio.")
-        serializer.save(user=user)
+
+        # Se l'utente ha già votato, aggiorna il voto
+        existing_vote = Vote.objects.filter(poll=poll, user=user).first()
+        if existing_vote:
+            existing_vote.choice = serializer.validated_data['choice']
+            existing_vote.save()
+        else:
+            serializer.save(user=user)
 
     def get_serializer_context(self):
         context = super().get_serializer_context()

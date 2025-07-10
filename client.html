@@ -24,6 +24,7 @@
       <input id="loginUser" placeholder="Username">
       <input id="loginPass" type="password" placeholder="Password">
       <button onclick="login()">Login</button>
+      <button onclick="guestAccess()">Entra come ospite</button>
 
       <h2>Register</h2>
       <input id="regUser" placeholder="Username">
@@ -37,10 +38,12 @@
       <h2>Polls</h2>
       <div id="polls"></div>
 
-      <h2>Create Poll</h2>
-      <input id="newTitle" placeholder="Title">
-      <textarea id="newDesc" placeholder="Description"></textarea>
-      <button onclick="createPoll()">Create Poll</button>
+      <div id="createArea">
+        <h2>Create Poll</h2>
+        <input id="newTitle" placeholder="Title">
+        <textarea id="newDesc" placeholder="Description"></textarea>
+        <button onclick="createPoll()">Create Poll</button>
+      </div>
     </div>
   </div>
 
@@ -48,10 +51,14 @@
     const API = "http://127.0.0.1:8000/api";
 
     function setHeaders() {
-      return {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("access")}`,
+      const token = localStorage.getItem("access");
+      const headers = {
+        "Content-Type": "application/json"
       };
+      if (token) {
+        headers["Authorization"] = `Bearer ${token}`;
+      }
+      return headers;
     }
 
     function login() {
@@ -63,40 +70,65 @@
           password: document.getElementById("loginPass").value
         }),
       })
-      .then(res => res.json())
-      .then(data => {
-        if (data.access) {
-          localStorage.setItem("access", data.access);
-          localStorage.setItem("refresh", data.refresh);
-          showMain();
-          loadPolls();
-        } else {
-          alert("Login failed");
-        }
-      });
-    }
-
-    function register() {
-      fetch(`${API}/accounts/register/`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          username: document.getElementById("regUser").value,
-          password: document.getElementById("regPass").value
-        }),
-      })
       .then(res => {
-        if (!res.ok) throw new Error("Registration failed");
+        if (!res.ok) throw new Error("Credenziali errate");
         return res.json();
       })
-      .then(() => alert("User registered"))
+      .then(data => {
+        localStorage.setItem("access", data.access);
+        localStorage.setItem("refresh", data.refresh);
+        showMain(true);
+        loadPolls();
+      })
       .catch(err => alert(err.message));
     }
 
+  function register() {
+  const username = document.getElementById("regUser").value;
+  const password = document.getElementById("regPass").value;
+
+  fetch(`${API}/accounts/register/`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ username, password }),
+  })
+  .then(res => {
+    if (!res.ok) throw new Error("Registrazione fallita");
+    return res.json();
+  })
+  .then(() => {
+    // login automatico dopo la registrazione
+    return fetch(`${API}/token/`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, password })
+    });
+  })
+  .then(res => {
+    if (!res.ok) throw new Error("Login dopo registrazione fallito");
+    return res.json();
+  })
+  .then(data => {
+    localStorage.setItem("access", data.access);
+    localStorage.setItem("refresh", data.refresh);
+    showMain();
+    loadPolls();
+  })
+  .catch(err => alert(err.message));
+}
+
+
+
     function logout() {
       localStorage.clear();
-      document.getElementById("auth").classList.remove("hidden");
-      document.getElementById("main").classList.add("hidden");
+      location.reload();
+    }
+
+    function guestAccess() {
+      document.getElementById("auth").classList.add("hidden");
+      document.getElementById("main").classList.remove("hidden");
+      document.getElementById("createArea").remove();
+      loadPolls();
     }
 
     function createPoll() {
@@ -109,7 +141,7 @@
         }),
       })
       .then(res => {
-        if (!res.ok) throw new Error("Failed to create poll");
+        if (!res.ok) throw new Error("Creazione sondaggio fallita");
         return res.json();
       })
       .then(() => {
@@ -126,23 +158,29 @@
       .then(data => {
         const container = document.getElementById("polls");
         container.innerHTML = "";
+        if (!Array.isArray(data)) {
+          container.innerHTML = "<i>Errore nel caricamento.</i>";
+          return;
+        }
         data.forEach(poll => {
           const div = document.createElement("div");
           div.className = "poll";
 
           const choicesHtml = poll.choices.map(choice => `
             ${choice.text} (${choice.votes_count} votes)
-            <button onclick="vote(${poll.id}, ${choice.id})">Vote</button>
+            ${localStorage.getItem("access") ? `<button onclick="vote(${poll.id}, ${choice.id})">Vote</button>` : ""}
           `).join("<br>");
 
           div.innerHTML = `
             <b>${poll.title}</b><br>
+            <small><i>by ${poll.author}</i></small><br>
             ${poll.description}<br><br>
             ${choicesHtml}<br><br>
-            <input id="choiceInput-${poll.id}" placeholder="Add a choice...">
-            <button onclick="addChoice(${poll.id})">Add Choice</button>
-            <br>
-            ${poll.is_owner_or_admin ? `<button class="danger" onclick="deletePoll(${poll.id})">Delete</button>` : ""}
+            ${poll.is_owner_or_admin ? `
+              <input id="choiceInput-${poll.id}" placeholder="Add a choice...">
+              <button onclick="addChoice(${poll.id})">Add Choice</button><br>
+              <button class="danger" onclick="deletePoll(${poll.id})">Delete</button>
+            ` : ""}
           `;
 
           container.appendChild(div);
@@ -153,7 +191,7 @@
     function addChoice(pollId) {
       const input = document.getElementById(`choiceInput-${pollId}`);
       const text = input.value;
-      if (!text.trim()) return alert("Choice cannot be empty");
+      if (!text.trim()) return alert("Scelta vuota");
 
       fetch(`${API}/choices/`, {
         method: "POST",
@@ -161,7 +199,7 @@
         body: JSON.stringify({ poll: pollId, text })
       })
       .then(res => {
-        if (!res.ok) throw new Error("Failed to add choice");
+        if (!res.ok) throw new Error("Errore aggiunta scelta");
         return res.json();
       })
       .then(() => {
@@ -178,7 +216,7 @@
         body: JSON.stringify({ poll: pollId, choice: choiceId })
       })
       .then(res => {
-        if (!res.ok) throw new Error("Hai già votato per questo sondaggio.");
+        if (!res.ok) throw new Error("Hai già votato.");
         return res.json();
       })
       .then(() => loadPolls())
@@ -186,7 +224,7 @@
     }
 
     function deletePoll(pollId) {
-      if (!confirm("Delete this poll?")) return;
+      if (!confirm("Eliminare il sondaggio?")) return;
       fetch(`${API}/polls/${pollId}/`, {
         method: "DELETE",
         headers: setHeaders()
@@ -202,6 +240,8 @@
     if (localStorage.getItem("access")) {
       showMain();
       loadPolls();
+    } else {
+      document.getElementById("auth").classList.remove("hidden");
     }
   </script>
 </body>

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Polling App</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f8f9fa; padding: 20px; }
+    .container { max-width: 600px; margin: auto; background: #fff; padding: 20px; border-radius: 8px; }
+    input, textarea, button { display: block; width: 100%; margin-bottom: 10px; padding: 10px; font-size: 16px; }
+    .logout { background: #dc3545; color: white; }
+    .logout:hover { background: #a71d2a; }
+    .poll { border-bottom: 1px solid #ddd; padding: 10px 0; }
+    button { cursor: pointer; background-color: #007bff; color: white; border: none; }
+    button:hover { background-color: #0056b3; }
+    .danger { background: #ff4444; }
+    .danger:hover { background: #cc0000; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div id="auth">
+      <h2>Login</h2>
+      <input id="loginUser" placeholder="Username">
+      <input id="loginPass" type="password" placeholder="Password">
+      <button onclick="login()">Login</button>
+
+      <h2>Register</h2>
+      <input id="regUser" placeholder="Username">
+      <input id="regPass" type="password" placeholder="Password">
+      <button onclick="register()">Register</button>
+    </div>
+
+    <div id="main" class="hidden">
+      <button class="logout" onclick="logout()">Logout</button>
+
+      <h2>Polls</h2>
+      <div id="polls"></div>
+
+      <h2>Create Poll</h2>
+      <input id="newTitle" placeholder="Title">
+      <textarea id="newDesc" placeholder="Description"></textarea>
+      <button onclick="createPoll()">Create Poll</button>
+    </div>
+  </div>
+
+  <script>
+    const API = "http://127.0.0.1:8000/api";
+
+    function setHeaders() {
+      return {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("access")}`,
+      };
+    }
+
+    function login() {
+      fetch(`${API}/token/`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          username: document.getElementById("loginUser").value,
+          password: document.getElementById("loginPass").value
+        }),
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.access) {
+          localStorage.setItem("access", data.access);
+          localStorage.setItem("refresh", data.refresh);
+          document.getElementById("auth").style.display = "none";
+          document.getElementById("main").style.display = "block";
+          loadPolls();
+        } else {
+          alert("Login failed");
+        }
+      });
+    }
+
+    function register() {
+      fetch(`${API}/accounts/register/`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          username: document.getElementById("regUser").value,
+          password: document.getElementById("regPass").value
+        }),
+      }).then(() => alert("User registered"));
+    }
+
+    function logout() {
+      localStorage.clear();
+      document.getElementById("auth").style.display = "block";
+      document.getElementById("main").style.display = "none";
+    }
+
+    function createPoll() {
+      fetch(`${API}/polls/`, {
+        method: "POST",
+        headers: setHeaders(),
+        body: JSON.stringify({
+          title: document.getElementById("newTitle").value,
+          description: document.getElementById("newDesc").value
+        }),
+      })
+      .then(res => {
+        if (!res.ok) throw new Error("Failed to create poll");
+        return res.json();
+      })
+      .then(() => {
+        document.getElementById("newTitle").value = "";
+        document.getElementById("newDesc").value = "";
+        loadPolls();
+      })
+      .catch(err => alert(err.message));
+    }
+
+    function loadPolls() {
+      fetch(`${API}/polls/`, { headers: setHeaders() })
+      .then(res => res.json())
+      .then(data => {
+        const container = document.getElementById("polls");
+        container.innerHTML = "";
+        data.forEach(poll => {
+          const div = document.createElement("div");
+          div.className = "poll";
+
+          const choicesHtml = poll.choices.map(choice => `
+            ${choice.text} (${choice.votes_count} votes)
+            <button onclick="vote(${poll.id}, ${choice.id})">Vote</button>
+          `).join("<br>");
+
+          div.innerHTML = `
+            <b>${poll.title}</b><br>
+            ${poll.description}<br><br>
+            ${choicesHtml}<br><br>
+            <input id="choiceInput-${poll.id}" placeholder="Add a choice...">
+            <button onclick="addChoice(${poll.id})">Add Choice</button>
+            <br>
+            ${poll.is_owner_or_admin ? `<button class="danger" onclick="deletePoll(${poll.id})">Delete</button>` : ""}
+          `;
+
+          container.appendChild(div);
+        });
+      });
+    }
+
+    function addChoice(pollId) {
+      const input = document.getElementById(`choiceInput-${pollId}`);
+      const text = input.value;
+      if (!text.trim()) return alert("Choice cannot be empty");
+      fetch(`${API}/choices/`, {
+        method: "POST",
+        headers: setHeaders(),
+        body: JSON.stringify({ poll: pollId, text })
+      })
+      .then(res => {
+        if (!res.ok) throw new Error("Failed to add choice");
+        return res.json();
+      })
+      .then(() => {
+        input.value = "";
+        loadPolls();
+      })
+      .catch(err => alert(err.message));
+    }
+
+    function vote(pollId, choiceId) {
+      fetch(`${API}/votes/`, {
+        method: "POST",
+        headers: setHeaders(),
+        body: JSON.stringify({ poll: pollId, choice: choiceId })
+      })
+      .then(res => {
+        if (!res.ok) throw new Error("Hai già votato per questo sondaggio.");
+        return res.json();
+      })
+      .then(() => loadPolls())
+      .catch(err => alert(err.message));
+    }
+
+    function deletePoll(pollId) {
+      if (!confirm("Delete this poll?")) return;
+      fetch(`${API}/polls/${pollId}/`, {
+        method: "DELETE",
+        headers: setHeaders()
+      }).then(() => loadPolls());
+    }
+
+    // Se token esiste, carica la pagina principale
+    if (localStorage.getItem("access")) {
+      document.getElementById("auth").style.display = "none";
+      document.getElementById("main").style.display = "block";
+      loadPolls();
+    }
+  </script>
+</body>
+</html>
+

@@ -64,7 +64,7 @@ ROOT_URLCONF = 'polling_api.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / "docs"],  # ✅ puntiamo alla cartella 'docs'
+        'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

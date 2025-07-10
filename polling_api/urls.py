@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.http import HttpResponse
 
 from django.contrib import admin
 from django.urls import path, include
@@ -8,7 +8,7 @@ from rest_framework_simplejwt.views import (
 )
 
 def home(request):
-    return render(request, "client.html")
+    return HttpResponse("Progetto Django deployato su Railway.")
 
 urlpatterns = [
     path('admin/', admin.site.urls),

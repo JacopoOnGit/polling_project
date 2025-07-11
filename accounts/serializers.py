@@ -13,10 +13,10 @@ class UserSerializer(serializers.ModelSerializer):
         }
 
     def create(self, validated_data):
-        validated_data.pop('is_staff', None)
-        validated_data.pop('is_superuser', None)
         password = validated_data.pop('password')
-        user = User(**validated_data)
+        user = User()
+        for attr, value in validated_data.items():
+            setattr(user, attr, value)
         user.set_password(password)
         user.save()
         return user

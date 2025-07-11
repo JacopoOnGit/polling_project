@@ -154,3 +154,7 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
 }
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://pollingproject-production-0fda.up.railway.app",
+]

@@ -16,14 +16,13 @@ class UserSerializer(serializers.ModelSerializer):
         try:
             password = validated_data.pop('password')
             user = User()
-            if 'bio' in validated_data:
-                user.bio = validated_data['bio']
-            if 'username' in validated_data:
-                user.username = validated_data['username']
+            for attr, value in validated_data.items():
+                setattr(user, attr, value)
             user.set_password(password)
             user.save()
             return user
         except Exception as e:
             print("Errore nella creazione utente:", e)
             raise serializers.ValidationError("Errore durante la registrazione.")
+
 

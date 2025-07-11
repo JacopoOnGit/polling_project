@@ -28,7 +28,8 @@ SECRET_KEY = os.environ.get("SECRET_KEY", "sviluppo-non-sicuro")
 DEBUG = os.environ.get("DEBUG", "False") == "True"
 
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ['pollingproject-production-0fda.up.railway.app']
+
 
 # Application definition
 
@@ -84,16 +85,14 @@ WSGI_APPLICATION = 'polling_api.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+
+
+import dj_database_url
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'railway',
-        'USER': 'postgres',
-        'PASSWORD': 'zdKnzhfsdxjkvsNgnVACWVZqSuyVyPET',
-        'HOST': 'postgres-production-0773.up.railway.app',
-        'PORT': '5432',
-    }
+    'default': dj_database_url.config(default=os.environ.get("DATABASE_URL"))
 }
+
 
 
 # Password validation

@@ -1,4 +1,4 @@
-from .views import homepage
+from .views import homepage, force_migrate
 
 from django.contrib import admin
 from django.urls import path, include
@@ -13,7 +13,8 @@ urlpatterns = [
     path('api/accounts/', include('accounts.urls')),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('migrate/', force_migrate),  # 🔧 route temporanea per migrazioni
     path('', homepage),
-
 ]
+
 

@@ -88,7 +88,7 @@
       <workItem from="1752077519513" duration="30479000" />
       <workItem from="1752178806075" duration="13612000" />
       <workItem from="1752228484031" duration="10368000" />
-      <workItem from="1752240391366" duration="333000" />
+      <workItem from="1752240391366" duration="786000" />
     </task>
     <task id="LOCAL-00001" summary="frontend quasi terminato">
       <option name="closed" value="true" />
@@ -410,7 +410,15 @@
       <option name="project" value="LOCAL" />
       <updated>1752240578088</updated>
     </task>
-    <option name="localTasksCounter" value="41" />
+    <task id="LOCAL-00041" summary="progetto completato, variabili d'ambiente per SECRET_KEY, DEBUG, ALLOWED_HOSTS">
+      <option name="closed" value="true" />
+      <created>1752240853594</created>
+      <option name="number" value="00041" />
+      <option name="presentableId" value="LOCAL-00041" />
+      <option name="project" value="LOCAL" />
+      <updated>1752240853594</updated>
+    </task>
+    <option name="localTasksCounter" value="42" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

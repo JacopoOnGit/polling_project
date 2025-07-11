@@ -4,9 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c9496a4d-b34a-4f5b-a161-63b17643ec61" name="Changes" comment="progetto completato, variabili d'ambiente per SECRET_KEY, DEBUG, ALLOWED_HOSTS">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-    </list>
+    <list default="true" id="c9496a4d-b34a-4f5b-a161-63b17643ec61" name="Changes" comment="progetto completato, superuser aggiunto" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -90,7 +88,7 @@
       <workItem from="1752077519513" duration="30479000" />
       <workItem from="1752178806075" duration="13612000" />
       <workItem from="1752228484031" duration="10368000" />
-      <workItem from="1752240391366" duration="2325000" />
+      <workItem from="1752240391366" duration="2823000" />
     </task>
     <task id="LOCAL-00001" summary="frontend quasi terminato">
       <option name="closed" value="true" />
@@ -428,7 +426,15 @@
       <option name="project" value="LOCAL" />
       <updated>1752241337906</updated>
     </task>
-    <option name="localTasksCounter" value="43" />
+    <task id="LOCAL-00043" summary="progetto completato, superuser aggiunto">
+      <option name="closed" value="true" />
+      <created>1752252264815</created>
+      <option name="number" value="00043" />
+      <option name="presentableId" value="LOCAL-00043" />
+      <option name="project" value="LOCAL" />
+      <updated>1752252264815</updated>
+    </task>
+    <option name="localTasksCounter" value="44" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -440,7 +446,8 @@
     <MESSAGE value="progetto terminato" />
     <MESSAGE value="requirements aggiunti" />
     <MESSAGE value="progetto completato, variabili d'ambiente per SECRET_KEY, DEBUG, ALLOWED_HOSTS" />
-    <option name="LAST_COMMIT_MESSAGE" value="progetto completato, variabili d'ambiente per SECRET_KEY, DEBUG, ALLOWED_HOSTS" />
+    <MESSAGE value="progetto completato, superuser aggiunto" />
+    <option name="LAST_COMMIT_MESSAGE" value="progetto completato, superuser aggiunto" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/polling_project$views.coverage" NAME="views Coverage Results" MODIFIED="1752165681778" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/polls" />

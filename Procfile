@@ -1,4 +1,1 @@
-web: bash -c "
-python manage.py migrate &&
-echo \"from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.filter(username='admin').exists() or User.objects.create_superuser('admin', 'admin@example.com', 'SuperPassword123')\" | python manage.py shell &&
-gunicorn polling_api.wsgi --bind 0.0.0.0:$PORT"
+web: bash -c "python manage.py migrate && echo \"from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.filter(username='admin').exists() or User.objects.create_superuser('admin', 'admin@example.com', 'SuperPassword123')\" | python manage.py shell && gunicorn polling_api.wsgi --bind 0.0.0.0:$PORT"

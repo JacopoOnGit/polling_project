@@ -10,3 +10,7 @@ https://jacopoongit.github.io/polling_project/client.html
 
 Backend API (Railway):
 https://pollingproject-production-0fda.up.railway.app/api/
+
+Superuser:
+nome utente: admin
+password: adminpassword
